@@ -16,6 +16,8 @@ app.prepare().then(async () => {
   // Initialize Server
   const server = express();
 
+  server.enable("trust proxy");
+
   server.all("*", (req, res) => {
     handle(req, res);
   });
