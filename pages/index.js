@@ -192,7 +192,7 @@ export default function Home({ baseUrl, initialBots }) {
 }
 
 export async function getServerSideProps({ req }) {
-  const protocol = req.secure ? "https" : "http";
+  const protocol = req.protocol;
   const host = req.headers.host;
   const baseUrl = `${protocol}://${host}`;
 

@@ -1,4 +1,4 @@
-const { createServer } = require("http");
+const express = require("express");
 const { parse } = require("url");
 const next = require("next");
 
@@ -15,9 +15,13 @@ app.prepare().then(async () => {
   await sequelize.sync();
 
   // Initialize Server
-  createServer((req, res) => {
-    handle(req, res, parse(req.url, true));
-  }).listen(port, (err) => {
+  const server = express();
+
+  server.get("*", (req, res) => {
+    handle(req, res);
+  });
+
+  server.listen(port, (err) => {
     if (err) throw err;
     console.log(`> Ready on http://localhost:${port}`);
   });
