@@ -18,6 +18,7 @@
     "react-dom": "16.13.1",
     "react-toastify": "^6.0.8",
     "sequelize": "^6.3.2",
+    "sqlite3": "^5.0.0",
     "telegraf": "^3.38.0"
   }
 }
