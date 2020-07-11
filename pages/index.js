@@ -196,6 +196,8 @@ export async function getServerSideProps({ req }) {
   const host = req.headers.host;
   const baseUrl = `${protocol}://${host}`;
 
+  console.log(baseUrl)
+
   //  Fetch Bots
   const response = await fetch(`${baseUrl}/api/bot`);
   const bots = await response.json();

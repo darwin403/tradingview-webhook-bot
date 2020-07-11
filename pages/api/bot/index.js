@@ -1,6 +1,7 @@
 const { Bot } = require("../../../models");
 
 export default async (req, res) => {
+  console.log(req.method)
   if (req.method === "GET") {
     return Bot.findAll().then(res.json).catch(res.json);
   }

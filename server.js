@@ -1,5 +1,4 @@
 const express = require("express");
-const { parse } = require("url");
 const next = require("next");
 
 const { sequelize } = require("./models");
@@ -17,7 +16,7 @@ app.prepare().then(async () => {
   // Initialize Server
   const server = express();
 
-  server.get("*", (req, res) => {
+  server.all("*", (req, res) => {
     handle(req, res);
   });
 
