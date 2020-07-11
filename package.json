@@ -3,14 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node server.js",
     "build": "next build",
-    "start": "next start"
+    "start": "NODE_ENV=production node server.js"
   },
   "dependencies": {
+    "@zeit/next-sass": "^1.0.1",
+    "bulma": "^0.9.0",
+    "dayjs": "^1.8.29",
     "next": "9.4.4",
+    "node-sass": "^4.14.1",
+    "puppeteer": "^5.0.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "sequelize": "^6.3.2"
+    "react-toastify": "^6.0.8",
+    "sequelize": "^6.3.2",
+    "telegraf": "^3.38.0"
   }
 }
