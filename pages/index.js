@@ -191,12 +191,13 @@ export default function Home({ baseUrl, initialBots }) {
   );
 }
 
-export async function getServerSideProps(context) {
-  const baseUrl = "http://localhost:3000"; // context.req.headers.referer.slice(0, -1);
-  let response;
+export async function getServerSideProps({ req }) {
+  const protocol = req.connection.encrypted ? "https" : "http";
+  const host = req.headers.host;
+  const baseUrl = `${protocol}://${host}`;
 
   //  Fetch Bots
-  response = await fetch(`${baseUrl}/api/bot`);
+  const response = await fetch(`${baseUrl}/api/bot`);
   const bots = await response.json();
 
   return {
