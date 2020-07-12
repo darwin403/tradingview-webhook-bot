@@ -19,6 +19,9 @@ export default async (req, res) => {
     return Message.destroy({ where: { id: req.query.channels } })
       .then(() =>
         Message.findAll({
+          where: {
+            status: "pending",
+          },
           order: [["createdAt", "DESC"]],
         })
       )

@@ -2,7 +2,7 @@ const { Sequelize, DataTypes } = require("sequelize");
 // const sequelize = new Sequelize('sqlite::memory:');
 const sequelize = new Sequelize({
   dialect: "sqlite",
-  storage: "public/db.sqlite",
+  storage: "db.sqlite",
   logging: false,
 });
 
@@ -37,4 +37,28 @@ const Message = sequelize.define("Message", {
   },
 });
 
-module.exports = { sequelize, Setting, Message };
+/**
+ * A function to generate default rows.
+ */
+async function defaultRows() {
+  // Default Settings
+  await Setting.findOrCreate({
+    where: {
+      type: "bot",
+      data: "1168684731:AAGTIMDpHujIesW3sJLYcvcHh5FP-HGorTI",
+    },
+  });
+  await Setting.findOrCreate({ where: { type: "screenshot", data: "1D" } });
+  await Setting.findOrCreate({ where: { type: "template", data: "default" } });
+
+  // Default Message
+  await Message.findOrCreate({
+    where: {
+      data: "SPX Crossing 3185.04 This is an initial sample message!",
+      agent: "PostmanRuntime/7.13.0",
+      channels: "@skdtradingviewbot",
+    },
+  });
+}
+
+module.exports = { sequelize, Setting, Message, defaultRows };
