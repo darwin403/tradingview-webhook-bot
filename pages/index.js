@@ -9,11 +9,17 @@ import "./index.scss";
 
 dayjs.extend(relativeTime);
 
-export default function Home({ baseUrl, initialBots }) {
-  const [bots, setBots] = useState(initialBots);
+export default function Home({ baseUrl, initialSettings }) {
+  const [settings, setSettings] = useState(initialSettings);
   const [messages, setMessages] = useState(null);
   const [stats, setStats] = useState({ pending: 0, total: 0, done: 0 });
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   useEffect(() => {
     // Subscribe for new messages
@@ -33,16 +39,6 @@ export default function Home({ baseUrl, initialBots }) {
       clearInterval(subscribeMessages);
     };
   }, []);
-
-  const deleteBot = (id) => {
-    fetch(`${baseUrl}/api/bot/${id}`, { method: "DELETE" })
-      .then((response) => response.json())
-      .then((response) => {
-        setBots(response);
-        toast.success(`Bot: ${id} was deleted!`);
-      })
-      .catch(setError);
-  };
 
   const deleteMessage = (id) => {
     fetch(`${baseUrl}/api/message/${id}`, { method: "DELETE" })
@@ -74,38 +70,19 @@ export default function Home({ baseUrl, initialBots }) {
           <div className="columns is-variable is-8">
             <div className="column">
               <div className="bots">
-                <h3 className="title">Telegram Bots</h3>
-                <h5 className="subtitle">The following bots are available</h5>
-                <table className="table is-fullwidth">
-                  <thead>
-                    <tr>
-                      <th>Bot</th>
-                      <th>Token</th>
-                    </tr>
-                  </thead>
+                <h3 className="title">Settings</h3>
+                <h5 className="subtitle">You can add/modify settings below</h5>
+                <table className="table">
                   <tbody>
-                    {bots.length === 0
-                      ? "No bots available."
-                      : bots.map((b) => (
-                          <tr key={b.id}>
+                    {settings.length === 0
+                      ? "No settings available."
+                      : settings.map((s) => (
+                          <tr>
                             <td>
-                              <a
-                                href={`https://t.me/${b.username}`}
-                                target="new"
-                              >
-                                {b.username}
-                              </a>
+                              <input type="checkbox" checked={s.enabled} />
                             </td>
-                            <td style={{ position: "relative" }}>
-                              <code>
-                                <small>{b.token}</small>
-                              </code>
-                              <a
-                                className="delete"
-                                style={{ position: "absolute", right: 0 }}
-                                onClick={() => deleteBot(b.id)}
-                              ></a>
-                            </td>
+                            <td>{s.type}</td>
+                            <td>{s.data}</td>
                           </tr>
                         ))}
                   </tbody>
@@ -196,13 +173,11 @@ export async function getServerSideProps({ req }) {
   const host = req.headers.host;
   const baseUrl = `${protocol}://${host}`;
 
-  console.log(baseUrl)
-
   //  Fetch Bots
-  const response = await fetch(`${baseUrl}/api/bot`);
-  const bots = await response.json();
+  const response = await fetch(`${baseUrl}/api/setting`);
+  const settings = await response.json();
 
   return {
-    props: { baseUrl, initialBots: bots },
+    props: { baseUrl, initialSettings: settings },
   };
 }

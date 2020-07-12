@@ -1,25 +1,19 @@
 const { Sequelize, DataTypes } = require("sequelize");
-
+// const sequelize = new Sequelize('sqlite::memory:');
 const sequelize = new Sequelize({
   dialect: "sqlite",
-  storage: "/tmp/db.sqlite",
+  storage: "public/db.sqlite",
   logging: false,
 });
 
-const Bot = sequelize.define("Bot", {
-  username: {
+const Setting = sequelize.define("Setting", {
+  type: {
     type: DataTypes.STRING,
     allowNull: false,
     // unique: true,
   },
-  token: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    // unique: true,
-    validate: {
-      len: [46, 46],
-    },
-  },
+  data: { type: DataTypes.STRING },
+  enabled: { type: DataTypes.BOOLEAN, defaultValue: true },
 });
 
 const Message = sequelize.define("Message", {
@@ -43,4 +37,4 @@ const Message = sequelize.define("Message", {
   },
 });
 
-module.exports = { sequelize, Bot, Message };
+module.exports = { sequelize, Setting, Message };
