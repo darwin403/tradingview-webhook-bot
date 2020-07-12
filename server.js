@@ -13,7 +13,7 @@ app.prepare().then(async () => {
   // Initialize Database
   await sequelize.sync();
 
-  // Initialize Server
+  // Initialize Express
   const server = express();
 
   server.enable("trust proxy");
