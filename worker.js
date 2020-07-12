@@ -142,7 +142,7 @@ async function init() {
     }
 
     // Sleep
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 60000));
   }
 
   /*****************
