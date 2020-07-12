@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "node server.js",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js"
+    "start:server": "NODE_ENV=production node server.js",
+    "start:worker": "node worker.js"
   },
   "dependencies": {
     "@zeit/next-sass": "^1.0.1",
