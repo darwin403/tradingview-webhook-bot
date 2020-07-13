@@ -69,6 +69,9 @@ async function screenshot(page, { symbol, timeframe }) {
  * @param {class} page - A puppeteer page instance
  */
 async function processQueue(page) {
+  // Update Status
+  await updateStatus();
+
   const bot_settings = await Setting.findOne({ where: { type: "bot" } });
   const screenshot_settings = await Setting.findOne({
     where: { type: "screenshot" },
@@ -168,8 +171,6 @@ async function init() {
   while (true) {
     // Update worker stats
     console.log(new Date(), "Checking Queue");
-
-    await updateStatus();
 
     try {
       // Process Queue
