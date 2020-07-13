@@ -22,6 +22,7 @@ export default async (req, res) => {
           where: {
             status: "pending",
           },
+          limit: 100,
           order: [["createdAt", "DESC"]],
         })
       )

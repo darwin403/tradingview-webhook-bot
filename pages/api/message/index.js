@@ -7,6 +7,7 @@ export default async (req, res) => {
         status: "pending",
       },
       order: [["createdAt", "DESC"]],
+      limit: 100,
     })
       .then(res.json)
       .catch(res.json);

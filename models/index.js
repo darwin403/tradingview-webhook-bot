@@ -1,10 +1,26 @@
 const { Sequelize, DataTypes } = require("sequelize");
-// const sequelize = new Sequelize('sqlite::memory:');
-const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: "db.sqlite",
-  logging: false,
-});
+let sequelize;
+
+if (process.env.DATABASE_URL) {
+  /**********************
+   * HEROKU POSTGRES DB *
+   **********************/
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: "postgres",
+    dialectOptions: {
+      ssl: { require: true, rejectUnauthorized: false },
+    },
+  });
+} else {
+  /******************
+   * DEVELOPMENT DB *
+   ******************/
+  sequelize = new Sequelize({
+    dialect: "sqlite",
+    storage: "db.sqlite",
+    logging: false,
+  });
+}
 
 const Setting = sequelize.define("Setting", {
   type: {
