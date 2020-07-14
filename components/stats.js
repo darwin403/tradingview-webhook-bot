@@ -17,11 +17,9 @@ export default function Stats() {
   // Subscribe Stats
   useEffect(() => {
     let subscribeStats = setInterval(async () => {
-      if (process.browser) {
-        axios(`${window.location.origin}/api/stats`)
-          .then((response) => setStats(response.data))
-          .catch((err) => toast.error(err.message));
-      }
+      axios(`/api/stats`)
+        .then((response) => setStats(response.data))
+        .catch((err) => toast.error(err.message));
     }, 2000);
 
     return () => {

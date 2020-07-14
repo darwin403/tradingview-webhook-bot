@@ -7,11 +7,9 @@ export default function Settings() {
 
   // Fetch Settings
   useState(() => {
-    if (process.browser) {
-      axios(`${window.location.origin}/api/setting`)
-        .then((response) => setSettings(response.data))
-        .catch((err) => toast.error(err.message));
-    }
+    axios(`/api/setting`)
+      .then((response) => setSettings(response.data))
+      .catch((err) => toast.error(err.message));
   }, []);
 
   return (

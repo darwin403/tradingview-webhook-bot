@@ -12,11 +12,9 @@ export default function Messages() {
   // Fetch Messages
   useState(() => {
     let subscribeMessages = setInterval(() => {
-      if (process.browser) {
-        axios(`${window.location.origin}/api/message`)
-          .then((response) => setMessages(response.data))
-          .catch((err) => toast.error(err.message));
-      }
+      axios(`/api/message`)
+        .then((response) => setMessages(response.data))
+        .catch((err) => toast.error(err.message));
     }, 2000);
 
     return () => {
@@ -26,7 +24,7 @@ export default function Messages() {
 
   // Handle delete
   const deleteMessage = (id) => {
-    axios(`${window.location.origin}/api/message/${id}`, { method: "DELETE" })
+    axios(`/api/message/${id}`, { method: "DELETE" })
       .then((response) => {
         setMessages(response.data);
         toast.success(`Message: ${id} was deleted!`);
