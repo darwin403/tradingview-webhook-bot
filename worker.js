@@ -179,7 +179,7 @@ async function init() {
       console.log(err);
     }
 
-    const wait = 10; // seconds
+    const wait = 1; // seconds
     console.log(new Date(), `Recheck Queue in: ${wait} seconds`);
 
     // Sleep
