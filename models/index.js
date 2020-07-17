@@ -54,7 +54,7 @@ const Message = sequelize.define("Message", {
     defaultValue: "pending",
   },
   log: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(10000),
   },
 });
 
