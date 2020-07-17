@@ -81,7 +81,7 @@ async function defaultRows() {
     where: {
       data: "SPX Crossing 3185.04 This is an initial sample message!",
       agent: "PostmanRuntime/7.13.0",
-      channels: "@mychannel",
+      channels: "@skdtradingviewbot",
       timeframe: "1 day",
     },
   });
