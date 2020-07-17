@@ -31,7 +31,7 @@ export default function Home() {
         </h1>
         <h3 className="subtitle has-text-centered has-text-light pt-3">
           Webhook URL:{" "}
-          <code>{baseUrl}/api/message/@skdtradingviewbot?timeframe=1 day</code>
+          <code>{baseUrl}/api/message/@skdtradingviewbot?timeframe=1%20day</code>
         </h3>
       </section>
       <section className="section has-background-dark has-text-light">

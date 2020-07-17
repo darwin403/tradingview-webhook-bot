@@ -163,7 +163,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/message/@skdtradingviewbot?timeframe=1 month",
+							"raw": "http://localhost:3000/api/message/@skdtradingviewbot?timeframe=1%20month",
 							"protocol": "http",
 							"host": [
 								"localhost"
