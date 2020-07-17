@@ -9,7 +9,7 @@ puppeteer.use(StealthPlugin());
 /**
  * A function that update's the worker activity status in Database
  */
-async function updateWorkerStatus() {
+async function updateWorkerStatus(initial = false) {
   if (initial === true) {
     return await Setting.findOrCreate({
       where: { type: "worker" },
@@ -169,7 +169,7 @@ async function init() {
    **********************/
   await sequelize.sync();
   await defaultRows();
-  await updateWorkerStatus((initial = true));
+  await updateWorkerStatus(true);
 
   /**********************
    * INITIALIZE BROWSER *

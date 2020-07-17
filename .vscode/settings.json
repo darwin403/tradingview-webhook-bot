@@ -4,6 +4,7 @@
         "hstore",
         "mypassword",
         "postgres",
+        "skdtradingviewbot",
         "telegraf",
         "timeframe",
         "toastify"
