@@ -1,10 +1,8 @@
+const Telegram = require("telegraf/telegram");
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
-const Telegram = require("telegraf/telegram");
 
 const { sequelize, defaultRows, Message, Setting } = require("./models");
-
-puppeteer.use(StealthPlugin());
 
 /**
  * A function that update's the worker activity status in Database
@@ -174,6 +172,8 @@ async function init() {
   /**********************
    * INITIALIZE BROWSER *
    **********************/
+  puppeteer.use(StealthPlugin());
+
   const browser = await puppeteer.launch({
     headless: true,
     args: ["--start-fullscreen", "--no-sandbox", "--window-size=1366,768"],
@@ -243,11 +243,6 @@ async function init() {
     // Sleep
     await new Promise((resolve) => setTimeout(resolve, wait * 1000));
   }
-
-  /*****************
-   * CLOSE BROWSER *
-   *****************/
-  await browser.close();
 }
 
 init();

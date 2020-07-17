@@ -18,7 +18,7 @@ if (process.env.DATABASE_URL) {
    ******************/
   sequelize = new Sequelize({
     dialect: "sqlite",
-    storage: "db.sqlite",
+    storage: "database.sqlite",
     logging: false,
   });
 }
@@ -27,7 +27,7 @@ const Setting = sequelize.define("Setting", {
   type: {
     type: DataTypes.STRING,
     allowNull: false,
-    // unique: true,
+    unique: true,
   },
   data: { type: DataTypes.STRING },
   enabled: { type: DataTypes.BOOLEAN, defaultValue: true },
@@ -81,7 +81,7 @@ async function defaultRows() {
     where: {
       data: "SPX Crossing 3185.04 This is an initial sample message!",
       agent: "PostmanRuntime/7.13.0",
-      channels: "@skdtradingviewbot",
+      channels: "@mychannel",
       timeframe: "1 day",
     },
   });

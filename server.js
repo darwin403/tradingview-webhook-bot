@@ -17,10 +17,24 @@ app.prepare().then(async () => {
   // Initialize Express
   const server = express();
 
+  // To retrieve HTTP protocol
   server.enable("trust proxy");
 
-  server.all("*", (req, res) => {
+  // Routes
+  server.all("*", (req, res, next) => {
+    // Append next
+    res.next = next;
+
     handle(req, res);
+  });
+
+  // Error Handler
+  server.use(function (err, req, res, next) {
+    if (res.headersSent) {
+      return next(err);
+    }
+
+    res.status(500).json(err);
   });
 
   server.listen(port, (err) => {

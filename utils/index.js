@@ -1,3 +1,4 @@
+// Remove credentials from settings
 export const safeSettings = (settings) => {
   // TODO: Ugly conversion
   return JSON.parse(JSON.stringify(settings)).map((setting) => {

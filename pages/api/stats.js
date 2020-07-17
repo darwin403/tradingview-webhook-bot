@@ -1,6 +1,7 @@
 const { Message, Setting } = require("@/models/index");
 
 export default async (req, res) => {
+  // Get Stats
   if (req.method === "GET") {
     const total = await Message.count();
     const pending = await Message.count({

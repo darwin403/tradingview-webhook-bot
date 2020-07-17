@@ -1,9 +1,5 @@
-# Heroku
+# Heroku Stack Requirements
 
--Google Chrome buildpack required: https://elements.heroku.com/buildpacks/heroku/heroku-buildpack-google-chrome
+- Buildpacks - [Google Chrome](https://elements.heroku.com/buildpacks/heroku/heroku-buildpack-google-chrome) and [Node.js](https://elements.heroku.com/buildpacks/heroku/heroku-buildpack-nodejs)
 
-- Heroku Add-on required.
-
-# Todo
-
-- Proper error handling on client and server side
+- Addons - [Postgres](https://elements.heroku.com/addons/heroku-postgresql)

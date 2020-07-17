@@ -1,6 +1,7 @@
 const { Message } = require("@/models/index");
 
 export default async (req, res) => {
+  // Create Message
   if (req.method === "POST") {
     return Message.create({
       data: req.body,
@@ -13,9 +14,10 @@ export default async (req, res) => {
       timeframe: req.query.timeframe ? req.query.timeframe.trim() : null,
     })
       .then(res.json)
-      .catch(res.json);
+      .catch(res.next);
   }
 
+  // Delete Message
   if (req.method === "DELETE") {
     return Message.destroy({ where: { id: req.query.channels } })
       .then(() =>
@@ -28,6 +30,6 @@ export default async (req, res) => {
         })
       )
       .then(res.json)
-      .catch(res.json);
+      .catch(res.next);
   }
 };

@@ -76,7 +76,9 @@ export default function Messages() {
                               <b>Timeframe:</b>
                             </td>
                             <td>
-                              <span className="tag">{m.timeframe}</span>
+                              <span className="tag">
+                                {m.timeframe || "default"}
+                              </span>
                             </td>
                           </tr>
                           <tr>

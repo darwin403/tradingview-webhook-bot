@@ -33,13 +33,13 @@ export default function Stats() {
       <div className="level-item has-text-centered">
         <div>
           <p className="heading">Node Environment</p>
-          <p className="title has-text-light">{stats.env}</p>
+          <p className="title has-text-light is-size-6">{stats.env}</p>
         </div>
       </div>
       <div className="level-item has-text-centered">
         <div>
           <p className="heading">Database</p>
-          <p className="title has-text-light">{stats.database}</p>
+          <p className="title has-text-light is-size-6">{stats.database}</p>
         </div>
       </div>
       <div className="level-item has-text-centered">
@@ -47,34 +47,34 @@ export default function Stats() {
           <p className="heading">Worker</p>
           {!stats.workerActivateAt ||
           dayjs().diff(stats.workerActivateAt, "minute") >= 1 ? (
-            <p className="title has-text-danger">INACTIVE</p>
+            <p className="title has-text-danger is-size-6">INACTIVE</p>
           ) : (
-            <p className="title has-text-success">RUNNING</p>
+            <p className="title has-text-success is-size-6">RUNNING</p>
           )}
         </div>
       </div>
       <div className="level-item has-text-centered">
         <div>
           <p className="heading">Total Messages</p>
-          <p className="title has-text-light">{stats.messages.total}</p>
+          <p className="title has-text-light is-size-6">{stats.messages.total}</p>
         </div>
       </div>
       <div className="level-item has-text-centered">
         <div>
           <p className="heading">Pending Messages</p>
-          <p className="title has-text-light">{stats.messages.pending}</p>
+          <p className="title has-text-light is-size-6">{stats.messages.pending}</p>
         </div>
       </div>
       <div className="level-item has-text-centered">
         <div>
           <p className="heading">Dispatched Messages</p>
-          <p className="title has-text-light">{stats.messages.success}</p>
+          <p className="title has-text-light is-size-6">{stats.messages.success}</p>
         </div>
       </div>
       <div className="level-item has-text-centered">
         <div>
           <p className="heading">Failed Messages</p>
-          <p className="title has-text-light">{stats.messages.failed}</p>
+          <p className="title has-text-light is-size-6">{stats.messages.failed}</p>
         </div>
       </div>
     </nav>

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Head from "next/head";
 import { ToastContainer } from "react-toastify";
+import Head from "next/head";
 
 import Stats from "@/components/stats";
 import Settings from "@/components/settings";
@@ -11,6 +11,7 @@ import "./index.scss";
 export default function Home() {
   const [baseUrl, setBaseURL] = useState("http://localhost:3000");
 
+  // Get window URL
   useState(() => {
     if (process.browser) {
       setBaseURL(window.location.origin);
@@ -20,9 +21,8 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Tradingview Webhook Manager</title>
         <link rel="icon" href="/favicon.ico" />
-        <script src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+        <title>Tradingview Webhook Manager</title>
       </Head>
       <ToastContainer hideProgressBar={true} autoClose={2000} />
       <section className="section has-background-link">
@@ -30,7 +30,8 @@ export default function Home() {
           Tradingview Webhook Manager
         </h1>
         <h3 className="subtitle has-text-centered has-text-light pt-3">
-          Webhook URL: <code>{baseUrl}/api/message/@mychannel?timeframe=1 day</code>
+          Webhook URL:{" "}
+          <code>{baseUrl}/api/message/@mychannel?timeframe=1 day</code>
         </h3>
       </section>
       <section className="section has-background-dark has-text-light">

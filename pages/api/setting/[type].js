@@ -2,6 +2,7 @@ const { Setting } = require("@/models/index");
 const { safeSettings } = require("@/utils/index");
 
 export default async (req, res) => {
+  // Update Setting
   if (req.method === "PATCH") {
     let query_update = {};
     if (req.body.data) query_update["data"] = req.body.data;
@@ -13,14 +14,15 @@ export default async (req, res) => {
       .then(() => Setting.findAll())
       .then((settings) => safeSettings(settings))
       .then(res.json)
-      .catch(res.json);
+      .catch(res.next);
   }
 
+  // Delete Setting
   if (req.method === "DELETE") {
     return Setting.destroy({ where: { type: req.query.type } })
       .then(() => Setting.findAll())
       .then((settings) => safeSettings(settings))
       .then(res.json)
-      .catch(res.json);
+      .catch(res.next);
   }
 };

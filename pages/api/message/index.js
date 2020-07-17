@@ -1,6 +1,7 @@
 const { Message } = require("@/models/index");
 
 export default async (req, res) => {
+  // Get all Messages
   if (req.method === "GET") {
     return Message.findAll({
       where: {
@@ -10,6 +11,6 @@ export default async (req, res) => {
       limit: 100,
     })
       .then(res.json)
-      .catch(res.json);
+      .catch(res.next);
   }
 };
