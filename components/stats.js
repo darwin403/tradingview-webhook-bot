@@ -8,9 +8,10 @@ export default function Stats() {
     env: "Loading",
     database: "Loading",
     messages: {
-      pending: "∞",
-      done: "∞",
       total: "∞",
+      pending: "∞",
+      success: "∞",
+      failed: "∞",
     },
   });
 
@@ -54,6 +55,12 @@ export default function Stats() {
       </div>
       <div className="level-item has-text-centered">
         <div>
+          <p className="heading">Total Messages</p>
+          <p className="title has-text-light">{stats.messages.total}</p>
+        </div>
+      </div>
+      <div className="level-item has-text-centered">
+        <div>
           <p className="heading">Pending Messages</p>
           <p className="title has-text-light">{stats.messages.pending}</p>
         </div>
@@ -61,7 +68,13 @@ export default function Stats() {
       <div className="level-item has-text-centered">
         <div>
           <p className="heading">Dispatched Messages</p>
-          <p className="title has-text-light">{stats.messages.done}</p>
+          <p className="title has-text-light">{stats.messages.success}</p>
+        </div>
+      </div>
+      <div className="level-item has-text-centered">
+        <div>
+          <p className="heading">Failed Messages</p>
+          <p className="title has-text-light">{stats.messages.failed}</p>
         </div>
       </div>
     </nav>

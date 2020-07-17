@@ -2,6 +2,7 @@
 
 # user generated
 *.sqlite
+yarn.lock
 
 # dependencies
 /node_modules

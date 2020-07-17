@@ -6,10 +6,10 @@
 	},
 	"item": [
 		{
-			"name": "Bot",
+			"name": "Setting",
 			"item": [
 				{
-					"name": "Bot: Create",
+					"name": "Setting: Create",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -17,19 +17,19 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"key": "username",
-									"value": "tradingview_bot",
+									"key": "type",
+									"value": "bot",
 									"type": "text"
 								},
 								{
-									"key": "token",
+									"key": "data",
 									"value": "1168684731:AAGTIMDpHujIesW3sJLYcvcHh5FP-HGorTI",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/bot",
+							"raw": "http://localhost:3000/api/setting",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -37,19 +37,19 @@
 							"port": "3000",
 							"path": [
 								"api",
-								"bot"
+								"setting"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Bot: List All",
+					"name": "Setting: List All",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/api/channel",
+							"raw": "http://localhost:3000/api/setting",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -57,19 +57,34 @@
 							"port": "3000",
 							"path": [
 								"api",
-								"channel"
+								"setting"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Bot: Delete",
+					"name": "Setting: Update",
 					"request": {
-						"method": "DELETE",
+						"method": "PATCH",
 						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "data",
+									"value": "1168684731:AAGTIMDpHujIesW3sJLYcvcHh5FP-HGorTI",
+									"type": "text"
+								},
+								{
+									"key": "enabled",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
 						"url": {
-							"raw": "http://localhost:3000/api/bot/3",
+							"raw": "http://localhost:3000/api/setting/telegram:bot",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -77,94 +92,55 @@
 							"port": "3000",
 							"path": [
 								"api",
-								"bot",
-								"3"
+								"setting",
+								"telegram:bot"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Setting: Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/setting/bot",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"setting",
+								"bot"
 							]
 						}
 					},
 					"response": []
 				}
 			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Channel",
-			"item": [
+			"event": [
 				{
-					"name": "Channel: Create",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "username",
-									"value": "tradingview_updates",
-									"type": "text"
-								},
-								{
-									"key": "cron",
-									"value": "* * * * * *",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/channel",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"channel"
-							]
-						}
-					},
-					"response": []
+					"listen": "prerequest",
+					"script": {
+						"id": "659b04f9-0d1f-48d1-91f4-2a184515071d",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				},
 				{
-					"name": "Channel: List All",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3000/api/channel",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"channel"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Channel: Delete",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3000/api/channel/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"channel",
-								"1"
-							]
-						}
-					},
-					"response": []
+					"listen": "test",
+					"script": {
+						"id": "c8a5209b-341d-4ad3-8217-0d8081a9da30",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -173,13 +149,13 @@
 			"name": "Message",
 			"item": [
 				{
-					"name": "Message: Create for All Channels",
+					"name": "Message: Channel",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "Text from Tradingview",
+							"raw": "USOIL Text from Tradingview",
 							"options": {
 								"raw": {
 									"language": "text"
@@ -187,36 +163,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/message",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"message"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Message: Create for Channel",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "Text from Tradingview",
-							"options": {
-								"raw": {
-									"language": "text"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/message/mytradingchannel",
+							"raw": "http://localhost:3000/api/message/@skdtradingviewbot?timeframe=1 month",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -225,7 +172,13 @@
 							"path": [
 								"api",
 								"message",
-								"mytradingchannel"
+								"@skdtradingviewbot"
+							],
+							"query": [
+								{
+									"key": "timeframe",
+									"value": "1 month"
+								}
 							]
 						}
 					},
@@ -246,6 +199,27 @@
 							"path": [
 								"api",
 								"message"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Message: Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/message/stats",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"message",
+								"stats"
 							]
 						}
 					},

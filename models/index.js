@@ -45,12 +45,16 @@ const Message = sequelize.define("Message", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  timeframe: { type: DataTypes.STRING },
   status: {
     type: DataTypes.STRING,
     validate: {
-      isIn: [["pending", "done"]],
+      isIn: [["pending", "success", "failed"]],
     },
     defaultValue: "pending",
+  },
+  log: {
+    type: DataTypes.STRING,
   },
 });
 
@@ -60,20 +64,26 @@ const Message = sequelize.define("Message", {
 async function defaultRows() {
   // Default Settings
   await Setting.findOrCreate({
-    where: {
-      type: "bot",
-      data: "1168684731:AAGTIMDpHujIesW3sJLYcvcHh5FP-HGorTI",
-    },
+    where: { type: "telegram:bot" },
+    defaults: { data: "1168684731:AAGTIMDpHujIesW3sJLYcvcHh5FP-HGorTI" },
   });
-  await Setting.findOrCreate({ where: { type: "screenshot", data: "1D" } });
-  await Setting.findOrCreate({ where: { type: "template", data: "default" } });
+  await Setting.findOrCreate({
+    where: { type: "tradingview:credentials" },
+    defaults: { data: "skdcodes@gmail.com:welcome@123", enabled: false },
+  });
+  await Setting.findOrCreate({
+    where: { type: "tradingview:screenshot" },
+    defaults: { data: "1 day" },
+  });
 
   // Default Message
   await Message.findOrCreate({
-    where: {
+    where: { id: 1 },
+    defaults: {
       data: "SPX Crossing 3185.04 This is an initial sample message!",
       agent: "PostmanRuntime/7.13.0",
-      channels: "@skdtradingviewbot",
+      channels: "@mychannel",
+      timeframe: "1 day",
     },
   });
 }

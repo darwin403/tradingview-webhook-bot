@@ -1,2 +1,7 @@
 @import "~bulma/bulma.sass";
+@import "~@creativebulma/bulma-tooltip/src/sass/index.sass";
 @import "~react-toastify/scss/main.scss";
+
+td {
+  border: 0 !important;
+}

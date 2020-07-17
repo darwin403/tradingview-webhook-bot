@@ -8,4 +8,3 @@
 
 - Proper error handling on client and server side
 - Add message error status
-- Fix repeated worker status bug

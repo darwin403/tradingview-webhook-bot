@@ -35,7 +35,9 @@ export default function Messages() {
   return (
     <div className="messages">
       <h3 className="title">Message Queue</h3>
-      <h6 className="subtitle is-6 has-text-grey">View pending messages</h6>
+      <h6 className="subtitle is-6 has-text-grey">
+        View pending and failed messages.
+      </h6>
       <ul className="content">
         {!messages
           ? "Loading ..."
@@ -43,14 +45,22 @@ export default function Messages() {
           ? "No pending messages."
           : messages.map((m) => (
               <li className="my-5" key={m.id}>
-                <div className="card">
+                <div
+                  className={`card ${
+                    m.status === "failed" &&
+                    "has-background-danger has-tooltip-danger has-tooltip-multiline"
+                  }`}
+                  data-tooltip={
+                    m.status === "failed" ? `ERROR: ${m.log}` : null
+                  }
+                >
                   <a
                     className="delete"
                     style={{ position: "absolute", right: 15, top: 15 }}
                     onClick={() => deleteMessage(m.id)}
                   ></a>
                   <div className="card-content">
-                    <div className="content">
+                    <div className="content table-container">
                       <table className="table is-narrow">
                         <tbody>
                           <tr>
@@ -63,6 +73,14 @@ export default function Messages() {
                           </tr>
                           <tr>
                             <td>
+                              <b>Timeframe:</b>
+                            </td>
+                            <td>
+                              <span className="tag">{m.timeframe}</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
                               <b>Channels:</b>
                             </td>
                             <td>
@@ -70,7 +88,7 @@ export default function Messages() {
                                 <a
                                   href={`https://t.me/${channel}`}
                                   target="new"
-                                  className="tag is-danger mx-1"
+                                  className="tag is-link mx-1"
                                   key={i}
                                 >
                                   {channel}
@@ -92,6 +110,20 @@ export default function Messages() {
                               <time title={m.createdAt}>
                                 {dayjs(m.createdAt).fromNow()}
                               </time>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <b>Status:</b>
+                            </td>
+                            <td>
+                              <span
+                                className={`tag ${
+                                  m.status === "failed" && "is-danger"
+                                }`}
+                              >
+                                {m.status}
+                              </span>
                             </td>
                           </tr>
                         </tbody>

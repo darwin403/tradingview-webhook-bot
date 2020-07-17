@@ -1,4 +1,4 @@
-const { Message } = require("../../../models");
+const { Message } = require("@/models/index");
 
 export default async (req, res) => {
   if (req.method === "POST") {
@@ -10,6 +10,7 @@ export default async (req, res) => {
         .map((c) => c.trim())
         .filter((i) => i)
         .join(","),
+      timeframe: req.query.timeframe ? req.query.timeframe.trim() : null,
     })
       .then(res.json)
       .catch(res.json);

@@ -1,14 +1,13 @@
 {
-  "name": "web-node-tradingview",
-  "version": "0.1.0",
-  "private": true,
   "scripts": {
-    "dev": "node server.js",
+    "dev:web": "node server.js",
+    "dev:worker": "nodemon worker.js --watch worker.js",
     "build": "next build",
-    "start:server": "NODE_ENV=production node server.js",
+    "start:web": "NODE_ENV=production node server.js",
     "start:worker": "node worker.js"
   },
   "dependencies": {
+    "@creativebulma/bulma-tooltip": "^1.2.0",
     "@zeit/next-sass": "^1.0.1",
     "axios": "^0.19.2",
     "bulma": "^0.9.0",
@@ -16,9 +15,9 @@
     "express": "^4.17.1",
     "next": "9.4.4",
     "node-sass": "^4.14.1",
+    "nodemon": "^2.0.4",
     "pg": "^8.3.0",
     "pg-hstore": "^2.3.3",
-    "prop-types": "^15.7.2",
     "puppeteer": "^5.0.0",
     "puppeteer-extra": "^3.1.12",
     "puppeteer-extra-plugin-stealth": "^2.4.13",

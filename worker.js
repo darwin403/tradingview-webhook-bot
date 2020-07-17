@@ -9,13 +9,7 @@ puppeteer.use(StealthPlugin());
 /**
  * A function that update's the worker activity status in Database
  */
-async function updateStatus(initial = false) {
-  if (initial) {
-    return await Setting.findOrCreate({
-      where: { type: "worker", data: new Date().toISOString(), enabled: false },
-    });
-  }
-
+async function updateWorkerStatus() {
   await Setting.update(
     { data: new Date().toISOString() },
     { where: { type: "worker" } }
@@ -40,14 +34,16 @@ async function screenshot(page, { symbol, timeframe }) {
 
   // Go to graph page
   await page.goto(graph_url);
-  await page.waitForSelector(".item-3cgIlGYO");
+  await page.waitForSelector(".menu-1fA401bY");
+  await page.click(".menu-1fA401bY");
+  await page.waitForSelector(".item-2xPVYue0");
   await page.evaluate((timeframe) => {
-    document.querySelectorAll(".item-3cgIlGYO").forEach((tag) => {
+    document.querySelectorAll(".item-2xPVYue0").forEach((tag) => {
       if (tag.textContent !== timeframe) return;
 
       tag.click();
     });
-  });
+  }, timeframe);
 
   // Wait for image generation
   await page.waitForSelector("[class='chart-loading-screen']");
@@ -69,24 +65,29 @@ async function screenshot(page, { symbol, timeframe }) {
  * @param {class} page - A puppeteer page instance
  */
 async function processQueue(page) {
-  // Update Status
-  await updateStatus();
+  // Update worker status
+  await updateWorkerStatus();
 
-  const bot_settings = await Setting.findOne({ where: { type: "bot" } });
-  const screenshot_settings = await Setting.findOne({
-    where: { type: "screenshot" },
+  const bot_settings = await Setting.findOne({
+    where: { type: "telegram:bot" },
   });
-  const messages = await Message.findAll({ where: { status: "pending" } });
+  const screenshot_settings = await Setting.findOne({
+    where: { type: "tradingview:screenshot" },
+  });
+  const pending_messages = await Message.findAll({
+    where: { status: "pending" },
+  });
 
-  console.log(new Date(), "Pending messages:", messages.length);
+  console.log(new Date(), "Pending messages:", pending_messages.length);
 
-  const bot = new Telegram(bot_settings["data"]);
+  const bot = new Telegram(bot_settings.data);
 
   // Iterate over all messages
-  for (let i = 0; i < messages.length; i++) {
-    const message = messages[i];
+  for (let i = 0; i < pending_messages.length; i++) {
+    const message = pending_messages[i];
     const id = message["id"];
     const data = message["data"];
+    const timeframe = message["timeframe"];
     const channels = message["channels"].split(",");
     const symbol = data.split(" ")[0];
 
@@ -97,38 +98,55 @@ async function processQueue(page) {
       const channel = channels[j];
       let image = null;
 
-      if (screenshot_settings["enabled"]) {
+      if (screenshot_settings.enabled) {
         try {
           image = await screenshot(page, {
             symbol,
-            timeframe: screenshot_settings["data"],
+            timeframe: timeframe || screenshot_settings.data,
           });
-          console.log(new Date(), "Screenshot SUCCESS:", symbol);
+          console.log(new Date(), "Screenshot (SUCCESS):", symbol);
         } catch (err) {
           image =
             "https://miro.medium.com/max/978/1*pUEZd8z__1p-7ICIO1NZFA.png";
-          console.log(new Date(), "Screenshot FAILED:", symbol);
+
+          // Update logs
+          await Message.update({ log: JSON.stringify(err) }, { where: { id } });
+
+          console.log(new Date(), "Screenshot (FAILED):", symbol);
         }
+
+        // Update worker status
+        await updateWorkerStatus();
       }
 
       // Dispatch messages
       try {
-        if (screenshot_settings["enabled"]) {
-          await bot.sendPhoto(channel, image, { caption: data });
+        let response;
+
+        if (screenshot_settings.enabled) {
+          response = await bot.sendPhoto(channel, image, { caption: data });
         } else {
-          await bot.sendMessage(channel, data);
+          response = await bot.sendMessage(channel, data);
         }
 
-        await Message.update({ status: "done" }, { where: { id } });
+        await Message.update(
+          { status: "success", log: JSON.stringify(response) },
+          { where: { id } }
+        );
 
-        console.log(new Date(), "Dispatch SUCCESS:", channel);
+        console.log(new Date(), "Dispatch (SUCCESS):", channel);
       } catch (err) {
-        console.log(err);
-        console.log(new Date(), "Dispatch FAILED:", channel);
+        // Update logs
+        await Message.update(
+          { status: "failed", log: JSON.stringify(err) },
+          { where: { id } }
+        );
+
+        console.log(new Date(), "Dispatch (FAILED):", err);
       }
 
       // Update worker status
-      await updateStatus();
+      await updateWorkerStatus();
     }
   }
 }
@@ -139,15 +157,12 @@ async function processQueue(page) {
 async function init() {
   console.log(new Date(), "Worker started");
 
-  // Update status
-  await updateStatus(true);
-
   /**********************
    * INITILIZE DATABASE *
    **********************/
-
   await sequelize.sync();
   await defaultRows();
+  await updateWorkerStatus();
 
   /**********************
    * INITIALIZE BROWSER *
@@ -165,6 +180,42 @@ async function init() {
 
   console.log(new Date(), "Browser session opened");
 
+  const credentials_settings = await Setting.findOne({
+    where: { type: "tradingview:credentials" },
+  });
+
+  /********************
+   * LOGIN TO ACCOUNT *
+   ********************/
+  if (credentials_settings.enabled) {
+    try {
+      const [email, password] = credentials_settings.data.split(":");
+
+      await page.goto("https://www.tradingview.com/#signin");
+      await page.click("span.js-show-email");
+      await page.type('[name="username"]', email);
+      await page.type('[name="password"]', password);
+      await page.click('[type="submit"]');
+
+      await Promise.race([
+        page.waitForNavigation({ waitUntil: "networkidle0" }),
+        page.waitForSelector(".tv-dialog__error"),
+      ]);
+
+      const failed = await page.evaluate(
+        () => !!document.querySelector(".tv-dialog__error")
+      );
+
+      if (!failed) {
+        console.log(new Date(), "Login (SUCCESS):", credentials_settings.data);
+      } else {
+        console.log(new Date(), "Login (INVALID):", credentials_settings.data);
+      }
+    } catch (err) {
+      console.log(new Date(), "Login (FAILED):", err);
+    }
+  }
+
   /********************
    * PROCESS MESSAGES *
    ********************/
@@ -176,7 +227,7 @@ async function init() {
       // Process Queue
       await processQueue(page);
     } catch (err) {
-      console.log(err);
+      console.log(new Date(), "Process Queue (FAILED):", err);
     }
 
     const wait = 1; // seconds
