@@ -30,8 +30,16 @@ async function updateWorkerStatus(initial = false) {
  * @returns {string} - The screenshot Image URL
  */
 async function screenshot(page, { symbol, timeframe }) {
+  // Symbol URL
+  let url = `https://www.tradingview.com/symbols/${symbol}/`;
+
+  const [exchange, stock] = symbol.split(":");
+  if (exchange && stock) {
+    url = `https://www.tradingview.com/symbols/${stock}/?exchange=${exchange}`;
+  }
+
   // Go to symbol page
-  await page.goto(`https://www.tradingview.com/symbols/${symbol}/`);
+  await page.goto(url);
   await page.waitForSelector('a[href*="/chart/?"]');
   const graph_url = await page.evaluate(
     () => document.querySelector('a[href*="/chart/?"]').href
