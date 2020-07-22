@@ -5,6 +5,7 @@
         "hstore",
         "mypassword",
         "postgres",
+        "signin",
         "skdtradingviewbot",
         "telegraf",
         "timeframe",

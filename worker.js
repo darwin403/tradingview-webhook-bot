@@ -41,12 +41,12 @@ async function screenshot(page, { symbol, timeframe }) {
   // Go to symbol page
   await page.goto(url);
   await page.waitForSelector('a[href*="/chart/?"]');
-  const graph_url = await page.evaluate(
+  const graphUrl = await page.evaluate(
     () => document.querySelector('a[href*="/chart/?"]').href
   );
 
   // Go to graph page
-  await page.goto(graph_url);
+  await page.goto(graphUrl);
   await page.waitForSelector(".menu-1fA401bY");
   await page.click(".menu-1fA401bY");
   await page.waitForSelector(".item-2xPVYue0");
@@ -61,15 +61,14 @@ async function screenshot(page, { symbol, timeframe }) {
   // Wait for image generation
   await page.waitForSelector("[class='chart-loading-screen']");
   await page.click("#header-toolbar-screenshot");
-  await page.waitForSelector('[value*="https://www.tradingview.com/x/"]');
 
-  // Get image URL
-  const image_url = await page.evaluate(() => {
-    return document.querySelector('[value*="https://www.tradingview.com/x/"]')
-      .value;
-  });
+  const snapshotIdResponse = await page.waitForResponse(
+    (response) =>
+      response.url().endsWith("snapshot/") && response.status() === 200
+  );
+  const snapshotId = await snapshotIdResponse.text();
 
-  return image_url;
+  return `https://www.tradingview.com/x/${snapshotId}/`;
 }
 
 /**
@@ -81,23 +80,23 @@ async function processQueue(page) {
   // Update worker status
   await updateWorkerStatus();
 
-  const bot_settings = await Setting.findOne({
+  const botSettings = await Setting.findOne({
     where: { type: "telegram:bot" },
   });
-  const screenshot_settings = await Setting.findOne({
+  const screenshotSettings = await Setting.findOne({
     where: { type: "tradingview:screenshot" },
   });
-  const pending_messages = await Message.findAll({
+  const pendingMessages = await Message.findAll({
     where: { status: "pending" },
   });
 
-  console.log(new Date(), "Pending messages:", pending_messages.length);
+  console.log(new Date(), "Pending messages:", pendingMessages.length);
 
-  const bot = new Telegram(bot_settings.data);
+  const bot = new Telegram(botSettings.data);
 
   // Iterate over all messages
-  for (let i = 0; i < pending_messages.length; i++) {
-    const message = pending_messages[i];
+  for (let i = 0; i < pendingMessages.length; i++) {
+    const message = pendingMessages[i];
     const id = message["id"];
     const data = message["data"];
     const timeframe = message["timeframe"];
@@ -111,11 +110,11 @@ async function processQueue(page) {
       const channel = channels[j];
       let image = null;
 
-      if (screenshot_settings.enabled) {
+      if (screenshotSettings.enabled) {
         try {
           image = await screenshot(page, {
             symbol,
-            timeframe: timeframe || screenshot_settings.data,
+            timeframe: timeframe || screenshotSettings.data,
           });
           console.log(new Date(), "Screenshot (SUCCESS):", symbol);
         } catch (err) {
@@ -136,7 +135,7 @@ async function processQueue(page) {
       try {
         let response;
 
-        if (screenshot_settings.enabled) {
+        if (screenshotSettings.enabled) {
           response = await bot.sendPhoto(channel, image, { caption: data });
         } else {
           response = await bot.sendMessage(channel, data);
@@ -183,8 +182,12 @@ async function init() {
   puppeteer.use(StealthPlugin());
 
   const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--start-fullscreen", "--no-sandbox", "--window-size=1366,768"],
+    headless: false,
+    args: [
+      // "--start-fullscreen",
+      "--no-sandbox",
+      "--window-size=1366,768",
+    ],
   });
   const page = (await browser.pages())[0];
 
@@ -195,16 +198,16 @@ async function init() {
 
   console.log(new Date(), "Browser session opened");
 
-  const credentials_settings = await Setting.findOne({
+  const credentialsSettings = await Setting.findOne({
     where: { type: "tradingview:credentials" },
   });
 
   /********************
    * LOGIN TO ACCOUNT *
    ********************/
-  if (credentials_settings.enabled) {
+  if (credentialsSettings.enabled) {
     try {
-      const [email, password] = credentials_settings.data.split(":");
+      const [email, password] = credentialsSettings.data.split(":");
 
       await page.goto("https://www.tradingview.com/#signin");
       await page.click("span.js-show-email");
@@ -212,19 +215,17 @@ async function init() {
       await page.type('[name="password"]', password);
       await page.click('[type="submit"]');
 
-      await Promise.race([
-        page.waitForNavigation({ waitUntil: "networkidle0" }),
-        page.waitForSelector(".tv-dialog__error"),
-      ]);
-
-      const failed = await page.evaluate(
-        () => !!document.querySelector(".tv-dialog__error")
+      const loginResponse = await page.waitForResponse(
+        (response) =>
+          response.url().endsWith("accounts/signin/") &&
+          response.status() === 200
       );
+      const loginSuccess = (await loginResponse.text()).includes("user");
 
-      if (!failed) {
-        console.log(new Date(), "Login (SUCCESS):", credentials_settings.data);
+      if (loginSuccess) {
+        console.log(new Date(), "Login (SUCCESS):", credentialsSettings.data);
       } else {
-        console.log(new Date(), "Login (INVALID):", credentials_settings.data);
+        console.log(new Date(), "Login (INVALID):", credentialsSettings.data);
       }
     } catch (err) {
       console.log(new Date(), "Login (FAILED):", err);
