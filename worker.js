@@ -182,12 +182,8 @@ async function init() {
   puppeteer.use(StealthPlugin());
 
   const browser = await puppeteer.launch({
-    headless: false,
-    args: [
-      // "--start-fullscreen",
-      "--no-sandbox",
-      "--window-size=1366,768",
-    ],
+    headless: true,
+    args: ["--start-fullscreen", "--no-sandbox", "--window-size=1366,768"],
   });
   const page = (await browser.pages())[0];
 
